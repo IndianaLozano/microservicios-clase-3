@@ -70,4 +70,6 @@ class WebControllerWithMockMvcStandaloneExample {
                 .andExpect(model().attribute("todoList", hasProperty("items", hasItems(hasProperty("descripcion", is("mi item"))))));
 
     }
+
+
 }

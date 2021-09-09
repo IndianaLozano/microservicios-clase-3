@@ -45,6 +45,7 @@ class WebControllerWithWebMvcTestAndMockBeanExample {
                     return new TodoList(listId, items);
                 }
         );
+        Mockito.when(mockService.eliminarItem(anyString(), anyString())).thenReturn(new TodoList());
 
     }
 
@@ -60,7 +61,7 @@ class WebControllerWithWebMvcTestAndMockBeanExample {
         TodoList nuevaTodoList = (TodoList) mvcResult.getModelAndView().getModelMap().getAttribute("todoList");
 
 
-        mockMvc.perform(post("/agregarItem")
+        MvcResult lista = mockMvc.perform(post("/agregarItem")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                         .param("listId", nuevaTodoList.getId())
                         .param("detalle", "mi item"))
@@ -68,7 +69,17 @@ class WebControllerWithWebMvcTestAndMockBeanExample {
                 .andExpect(view().name("todo-list"))
                 .andExpect(model().attribute("todoList", hasProperty("id", is(nuevaTodoList.getId()))))
                 .andExpect(model().attribute("todoList", hasProperty("items", iterableWithSize(1))))
-                .andExpect(model().attribute("todoList", hasProperty("items", hasItems(hasProperty("descripcion", is("mi item"))))));
+                .andExpect(model().attribute("todoList", hasProperty("items", hasItems(hasProperty("descripcion", is("mi item"))))))
+                .andReturn();
+
+        TodoList nuevaTodoList2 = (TodoList) lista.getModelAndView().getModelMap().getAttribute("todoList");
+
+        mockMvc.perform(post("/eliminar")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .param("listId", nuevaTodoList2.getId())
+                .param("itemId", nuevaTodoList2.getItems().get(0).getId()))
+                .andExpect(status().isOk())
+                .andExpect(model().attribute("todoList", hasProperty("items", iterableWithSize(0))));
 
     }
 }

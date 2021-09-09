@@ -60,7 +60,7 @@ public class TodoListServiceImpl implements TodoListService {
     public TodoList eliminarItem(String listId, String itemId) {
         TodoList todoList = this.repository.getTodoList(listId);
         List<TodoItem> todoItems = todoList.getItems().stream()
-                .filter(item -> item.getId().equals(itemId))
+                .filter(item -> !item.getId().equals(itemId))
                 .collect(Collectors.toList());
 
         todoList = new TodoList(todoList.getId(), todoItems);

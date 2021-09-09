@@ -7,6 +7,7 @@ import io.redbee.academy.microservicios.todolist.service.TodoListService;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -41,4 +42,13 @@ public class TodoListWebController {
         model.addAttribute("todoList", todoList);
         return "todo-list";
     }
+
+    @PostMapping(value = "/eliminar",
+            consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public String eliminarItem(ItemAccionDto itemAccion, Model model) {
+        TodoList todoList = service.eliminarItem(itemAccion.getListId(), itemAccion.getItemId());
+        model.addAttribute("todoList", todoList);
+        return "todo-list";
+    }
+
 }
